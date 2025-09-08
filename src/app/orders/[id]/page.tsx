@@ -3,10 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useOrdersStore } from '@/stores/orders';
+import { Order } from '@/types';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { SkeletonCard } from '@/components/ui/skeleton';
-import { ArrowLeft, Package, Calendar, FileText, CreditCard, Truck, CheckCircle, X } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ArrowLeft, Package, Calendar, FileText, Truck, CheckCircle, X } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { useToast } from '@/components/ui/toast';
 
@@ -25,13 +26,7 @@ export default function OrderDetailPage() {
   const orderId = params.id as string;
   
   const { getOrder, isLoading, error } = useOrdersStore();
-  const [order, setOrder] = useState<any>(null);
-
-  useEffect(() => {
-    if (orderId) {
-      loadOrder();
-    }
-  }, [orderId]);
+  const [order, setOrder] = useState<Order | null>(null);
 
   const loadOrder = async () => {
     try {
@@ -42,14 +37,20 @@ export default function OrderDetailPage() {
     }
   };
 
+  useEffect(() => {
+    if (orderId) {
+      loadOrder();
+    }
+  }, [orderId, loadOrder]);
+
   if (isLoading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center space-x-4">
-          <SkeletonCard className="h-10 w-10" />
-          <SkeletonCard className="h-8 w-48" />
+          <Skeleton className="h-10 w-10" />
+          <Skeleton className="h-8 w-48" />
         </div>
-        <SkeletonCard className="h-96" />
+        <Skeleton className="h-96" />
       </div>
     );
   }
@@ -136,7 +137,7 @@ export default function OrderDetailPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {order.cartSnapshot.items.map((item: any) => (
+                {order.cartSnapshot.items.map((item) => (
                   <div key={item.productId} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
                     <div className="flex-1">
                       <div className="font-medium text-gray-900">{item.displayName}</div>

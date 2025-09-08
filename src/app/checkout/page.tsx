@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/stores/cart';
 import { useOrdersStore } from '@/stores/orders';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Modal } from '@/components/ui/modal';
 import { CheckCircle, XCircle, CreditCard, Calendar, FileText, Package } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
@@ -61,7 +61,7 @@ export default function CheckoutPage() {
           message: paymentResult.error || '결제 처리 중 오류가 발생했습니다.',
         });
       }
-    } catch (error) {
+    } catch (_error) {
       setPaymentResult({
         success: false,
         error: '주문 처리 중 오류가 발생했습니다.',

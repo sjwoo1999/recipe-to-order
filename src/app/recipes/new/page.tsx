@@ -38,7 +38,7 @@ export default function NewRecipePage() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleItemChange = (index: number, field: string, value: string | number) => {
+  const handleItemChange = (index: number, field: string, value: string | number | string[]) => {
     setItems(prev => prev.map((item, i) => 
       i === index ? { ...item, [field]: value } : item
     ));
@@ -107,7 +107,7 @@ export default function NewRecipePage() {
       });
 
       router.push('/recipes');
-    } catch (error) {
+    } catch (_error) {
       addToast({
         type: 'error',
         title: '레시피 생성 실패',

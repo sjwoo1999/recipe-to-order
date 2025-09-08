@@ -7,7 +7,7 @@ import { useCatalogStore } from '@/stores/catalog';
 import { useCartStore } from '@/stores/cart';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { SkeletonCard } from '@/components/ui/skeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, ChefHat, Users, ShoppingCart, AlertTriangle } from 'lucide-react';
 import { formatDate, formatCurrency } from '@/lib/utils';
 import { useToast } from '@/components/ui/toast';
@@ -73,7 +73,7 @@ export default function RecipeDetailPage() {
         title: '장바구니에 추가되었습니다',
         message: `${matchResults.length}개 재료가 장바구니에 추가되었습니다.`,
       });
-    } catch (error) {
+    } catch (_error) {
       addToast({
         type: 'error',
         title: '장바구니 추가 실패',
@@ -86,10 +86,10 @@ export default function RecipeDetailPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center space-x-4">
-          <SkeletonCard className="h-10 w-10" />
-          <SkeletonCard className="h-8 w-48" />
+          <Skeleton className="h-10 w-10" />
+          <Skeleton className="h-8 w-48" />
         </div>
-        <SkeletonCard className="h-96" />
+        <Skeleton className="h-96" />
       </div>
     );
   }
@@ -247,7 +247,7 @@ export default function RecipeDetailPage() {
             {isMatching ? (
               <div className="space-y-4">
                 {Array.from({ length: scaledItems.length }).map((_, i) => (
-                  <SkeletonCard key={i} />
+                  <Skeleton key={i} className="h-32" />
                 ))}
               </div>
             ) : matchResults.length > 0 ? (

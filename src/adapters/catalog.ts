@@ -60,7 +60,7 @@ export class CatalogAdapter {
       throw new ApiError('FIND_PRODUCTS_FAILED', '재료에 맞는 상품을 찾는데 실패했습니다.', true);
     }
     
-    const { qty: stdQty, unit: stdUnit } = convertToStandardUnit(ingredient.scaledQty, ingredient.unit);
+    const { unit: stdUnit } = convertToStandardUnit(ingredient.scaledQty, ingredient.unit);
     
     // Find products that match the ingredient name or alternative names
     const searchTerms = [ingredient.name, ...ingredient.altNames].map(term => term.toLowerCase());
@@ -102,7 +102,7 @@ export class CatalogAdapter {
       
       if (candidates.length > 0) {
         const bestMatch = candidates[0]; // Highest priority product
-        const { effectiveQty, quantityPacks, warning } = calculateEffectiveQuantity(
+        const { effectiveQty, warning } = calculateEffectiveQuantity(
           ingredient.scaledQty,
           bestMatch.moq,
           bestMatch.packSize
@@ -145,7 +145,7 @@ export class CatalogAdapter {
       throw new ApiError('GET_CATEGORIES_FAILED', '카테고리 목록을 가져오는데 실패했습니다.', true);
     }
     
-    const categories = [...new Set(this.products.map(p => p.category).filter(Boolean))];
+    const categories = [...new Set(this.products.map(p => p.category).filter(Boolean))] as string[];
     return categories.sort();
   }
 

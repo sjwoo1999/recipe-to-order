@@ -10,9 +10,7 @@ import { PlanGate } from '@/components/plan-gate';
 import { 
   BookOpen, 
   ShoppingCart, 
-  Package, 
   CreditCard, 
-  ChefHat,
   Plus,
   History
 } from 'lucide-react';

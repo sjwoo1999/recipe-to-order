@@ -105,7 +105,7 @@ export interface Plan {
   price: number;
 }
 
-export interface ApiError {
+export interface ApiErrorData {
   code: string;
   message: string;
   retryable: boolean;
@@ -125,5 +125,5 @@ export class ApiError extends Error {
 
 export interface LoadingState {
   isLoading: boolean;
-  error?: ApiError;
+  error?: ApiErrorData;
 }

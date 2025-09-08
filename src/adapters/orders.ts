@@ -26,7 +26,7 @@ export class OrdersAdapter {
     return order;
   }
 
-  async getOrders(storeId: string): Promise<Order[]> {
+  async getOrders(_storeId: string): Promise<Order[]> {
     await mockDelay(300);
     
     if (shouldInjectError(0.05)) {
@@ -90,7 +90,7 @@ export class OrdersAdapter {
   }
 
   // Simulate payment processing
-  async processPayment(cart: Cart): Promise<{ success: boolean; transactionId?: string; error?: string }> {
+  async processPayment(_cart: Cart): Promise<{ success: boolean; transactionId?: string; error?: string }> {
     await mockDelay(1000);
     
     // Simulate payment failure (10% chance)

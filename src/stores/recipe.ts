@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Recipe, RecipeItem, ScaledItem, LoadingState } from '@/types';
+import { Recipe, ScaledItem, LoadingState, ApiError } from '@/types';
 import { recipesAdapter } from '@/adapters/recipes';
 import { convertToStandardUnit } from '@/lib/utils';
 
@@ -34,13 +34,14 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
     try {
       const recipes = await recipesAdapter.getRecipes(storeId);
       set({ recipes, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('LOAD_RECIPES_FAILED', '레시피 목록을 불러오는데 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'LOAD_RECIPES_FAILED',
-          message: error.message || '레시피 목록을 불러오는데 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -69,13 +70,14 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
           },
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('LOAD_RECIPE_FAILED', '레시피를 불러오는데 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'LOAD_RECIPE_FAILED',
-          message: error.message || '레시피를 불러오는데 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -90,13 +92,14 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
         recipes: [...state.recipes, newRecipe],
         isLoading: false,
       }));
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('CREATE_RECIPE_FAILED', '레시피 생성에 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'CREATE_RECIPE_FAILED',
-          message: error.message || '레시피 생성에 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -112,13 +115,14 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
         currentRecipe: state.currentRecipe?.id === id ? updatedRecipe : state.currentRecipe,
         isLoading: false,
       }));
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('UPDATE_RECIPE_FAILED', '레시피 수정에 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'UPDATE_RECIPE_FAILED',
-          message: error.message || '레시피 수정에 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -134,13 +138,14 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
         currentRecipe: state.currentRecipe?.id === id ? null : state.currentRecipe,
         isLoading: false,
       }));
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('DELETE_RECIPE_FAILED', '레시피 삭제에 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'DELETE_RECIPE_FAILED',
-          message: error.message || '레시피 삭제에 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -163,7 +168,7 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
     
     const scaledItems: ScaledItem[] = currentRecipe.items.map(item => {
       const scaledQty = Math.round(item.baseQty * scaleRatio * 100) / 100; // Round to 2 decimal places
-      const { qty: stdQty, unit: stdUnit } = convertToStandardUnit(scaledQty, item.unit);
+      const { unit: stdUnit } = convertToStandardUnit(scaledQty, item.unit);
       
       return {
         ...item,

@@ -7,7 +7,7 @@ import { useOrdersStore } from '@/stores/orders';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SkeletonCard } from '@/components/ui/skeleton';
-import { Package, Eye, X, Clock, CheckCircle, Truck, AlertCircle } from 'lucide-react';
+import { Package, Eye, X, Clock, CheckCircle, Truck } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
 
 const statusConfig = {

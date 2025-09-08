@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Cart, CartItem, Product, MatchResult, LoadingState } from '@/types';
+import { Cart, CartItem, MatchResult, LoadingState, ApiError } from '@/types';
 import { catalogAdapter } from '@/adapters/catalog';
 import { calculateCartTotals } from '@/lib/utils';
 
@@ -89,13 +89,14 @@ export const useCartStore = create<CartState>((set, get) => ({
         },
         isLoading: false,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('ADD_TO_CART_FAILED', '장바구니에 추가하는데 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'ADD_TO_CART_FAILED',
-          message: error.message || '장바구니에 추가하는데 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }

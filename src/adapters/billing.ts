@@ -59,7 +59,7 @@ export class BillingAdapter {
     }
     
     // Update user's plan
-    user.plan = newPlan as any;
+    user.plan = newPlan as 'Basic' | 'Standard' | 'Premium';
     
     return { success: true };
   }

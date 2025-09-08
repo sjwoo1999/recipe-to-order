@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Order, Cart, LoadingState } from '@/types';
+import { Order, Cart, LoadingState, ApiError } from '@/types';
 import { ordersAdapter } from '@/adapters/orders';
-import { generateId } from '@/lib/utils';
 
 interface OrdersState extends LoadingState {
   orders: Order[];
@@ -18,7 +17,7 @@ interface OrdersState extends LoadingState {
 
 export const useOrdersStore = create<OrdersState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       orders: [],
       isLoading: false,
       error: undefined,
@@ -33,13 +32,14 @@ export const useOrdersStore = create<OrdersState>()(
             isLoading: false,
           }));
           return order;
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const apiError = error instanceof ApiError ? error : new ApiError('CREATE_ORDER_FAILED', '주문 생성에 실패했습니다.', true);
           set({
             isLoading: false,
             error: {
-              code: error.code || 'CREATE_ORDER_FAILED',
-              message: error.message || '주문 생성에 실패했습니다.',
-              retryable: error.retryable ?? true,
+              code: apiError.code,
+              message: apiError.message,
+              retryable: apiError.retryable,
             },
           });
           throw error;
@@ -52,16 +52,17 @@ export const useOrdersStore = create<OrdersState>()(
         try {
           const orders = await ordersAdapter.getOrders(storeId);
           set({ orders, isLoading: false });
-        } catch (error: any) {
-          set({
-            isLoading: false,
-            error: {
-              code: error.code || 'LOAD_ORDERS_FAILED',
-              message: error.message || '주문 목록을 불러오는데 실패했습니다.',
-              retryable: error.retryable ?? true,
-            },
-          });
-        }
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('LOAD_ORDERS_FAILED', '주문 목록을 불러오는데 실패했습니다.', true);
+      set({
+        isLoading: false,
+        error: {
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
+        },
+      });
+    }
       },
 
       getOrder: async (id: string) => {
@@ -71,13 +72,14 @@ export const useOrdersStore = create<OrdersState>()(
           const order = await ordersAdapter.getOrder(id);
           set({ isLoading: false });
           return order;
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const apiError = error instanceof ApiError ? error : new ApiError('GET_ORDER_FAILED', '주문 정보를 가져오는데 실패했습니다.', true);
           set({
             isLoading: false,
             error: {
-              code: error.code || 'GET_ORDER_FAILED',
-              message: error.message || '주문 정보를 가져오는데 실패했습니다.',
-              retryable: error.retryable ?? true,
+              code: apiError.code,
+              message: apiError.message,
+              retryable: apiError.retryable,
             },
           });
           return null;
@@ -95,16 +97,17 @@ export const useOrdersStore = create<OrdersState>()(
             ),
             isLoading: false,
           }));
-        } catch (error: any) {
-          set({
-            isLoading: false,
-            error: {
-              code: error.code || 'UPDATE_ORDER_STATUS_FAILED',
-              message: error.message || '주문 상태 업데이트에 실패했습니다.',
-              retryable: error.retryable ?? true,
-            },
-          });
-        }
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('UPDATE_ORDER_STATUS_FAILED', '주문 상태 업데이트에 실패했습니다.', true);
+      set({
+        isLoading: false,
+        error: {
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
+        },
+      });
+    }
       },
 
       cancelOrder: async (id: string) => {
@@ -118,16 +121,17 @@ export const useOrdersStore = create<OrdersState>()(
             ),
             isLoading: false,
           }));
-        } catch (error: any) {
-          set({
-            isLoading: false,
-            error: {
-              code: error.code || 'CANCEL_ORDER_FAILED',
-              message: error.message || '주문 취소에 실패했습니다.',
-              retryable: error.retryable ?? true,
-            },
-          });
-        }
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('CANCEL_ORDER_FAILED', '주문 취소에 실패했습니다.', true);
+      set({
+        isLoading: false,
+        error: {
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
+        },
+      });
+    }
       },
 
       processPayment: async (cart: Cart) => {
@@ -137,18 +141,19 @@ export const useOrdersStore = create<OrdersState>()(
           const result = await ordersAdapter.processPayment(cart);
           set({ isLoading: false });
           return result;
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const apiError = error instanceof ApiError ? error : new ApiError('PROCESS_PAYMENT_FAILED', '결제 처리에 실패했습니다.', true);
           set({
             isLoading: false,
             error: {
-              code: error.code || 'PROCESS_PAYMENT_FAILED',
-              message: error.message || '결제 처리에 실패했습니다.',
-              retryable: error.retryable ?? true,
+              code: apiError.code,
+              message: apiError.message,
+              retryable: apiError.retryable,
             },
           });
           return {
             success: false,
-            error: error.message || '결제 처리에 실패했습니다.',
+            error: apiError.message,
           };
         }
       },

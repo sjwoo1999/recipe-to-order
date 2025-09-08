@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Plan, LoadingState } from '@/types';
+import { Plan, LoadingState, ApiError } from '@/types';
 import { billingAdapter } from '@/adapters/billing';
 import { useAuthStore } from './auth';
 
@@ -49,13 +49,14 @@ export const useBillingStore = create<BillingState>((set, get) => ({
     try {
       const plans = await billingAdapter.getPlans();
       set({ plans, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('LOAD_PLANS_FAILED', '요금제 정보를 불러오는데 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'LOAD_PLANS_FAILED',
-          message: error.message || '요금제 정보를 불러오는데 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -67,13 +68,14 @@ export const useBillingStore = create<BillingState>((set, get) => ({
     try {
       const plan = await billingAdapter.getCurrentPlan(userId);
       set({ currentPlan: plan, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('LOAD_CURRENT_PLAN_FAILED', '현재 요금제를 불러오는데 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'LOAD_CURRENT_PLAN_FAILED',
-          message: error.message || '현재 요금제를 불러오는데 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -87,7 +89,7 @@ export const useBillingStore = create<BillingState>((set, get) => ({
       
       if (result.success) {
         // Update user's plan in auth store
-        useAuthStore.getState().updatePlan(newPlan as any);
+        useAuthStore.getState().updatePlan(newPlan as 'Basic' | 'Standard' | 'Premium');
         
         // Reload current plan and feature flags
         await get().loadCurrentPlan(userId);
@@ -104,13 +106,14 @@ export const useBillingStore = create<BillingState>((set, get) => ({
           },
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('CHANGE_PLAN_FAILED', '요금제 변경에 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'CHANGE_PLAN_FAILED',
-          message: error.message || '요금제 변경에 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -122,13 +125,14 @@ export const useBillingStore = create<BillingState>((set, get) => ({
     try {
       const flags = await billingAdapter.getFeatureFlags(userId);
       set({ featureFlags: flags, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('LOAD_FEATURE_FLAGS_FAILED', '기능 플래그를 불러오는데 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'LOAD_FEATURE_FLAGS_FAILED',
-          message: error.message || '기능 플래그를 불러오는데 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -140,13 +144,14 @@ export const useBillingStore = create<BillingState>((set, get) => ({
     try {
       const stats = await billingAdapter.getUsageStats(userId);
       set({ usageStats: stats, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('LOAD_USAGE_STATS_FAILED', '사용량 통계를 불러오는데 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'LOAD_USAGE_STATS_FAILED',
-          message: error.message || '사용량 통계를 불러오는데 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -162,12 +167,13 @@ export const useBillingStore = create<BillingState>((set, get) => ({
       }
       
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('CHECK_FEATURE_ACCESS_FAILED', '기능 접근 권한을 확인하는데 실패했습니다.', true);
       set({
         error: {
-          code: error.code || 'CHECK_FEATURE_ACCESS_FAILED',
-          message: error.message || '기능 접근 권한을 확인하는데 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
       return false;

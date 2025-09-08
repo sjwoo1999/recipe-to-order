@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Product, ScaledItem, MatchResult, LoadingState } from '@/types';
+import { Product, ScaledItem, MatchResult, LoadingState, ApiError } from '@/types';
 import { catalogAdapter } from '@/adapters/catalog';
 
 interface CatalogState extends LoadingState {
@@ -23,7 +23,7 @@ interface CatalogState extends LoadingState {
   clearMatchResults: () => void;
 }
 
-export const useCatalogStore = create<CatalogState>((set, get) => ({
+export const useCatalogStore = create<CatalogState>((set) => ({
   products: [],
   matchResults: [],
   searchResults: [],
@@ -38,13 +38,14 @@ export const useCatalogStore = create<CatalogState>((set, get) => ({
     try {
       const results = await catalogAdapter.searchProducts(query, filters);
       set({ searchResults: results, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('SEARCH_PRODUCTS_FAILED', '상품 검색에 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'SEARCH_PRODUCTS_FAILED',
-          message: error.message || '상품 검색에 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -56,13 +57,14 @@ export const useCatalogStore = create<CatalogState>((set, get) => ({
     try {
       const results = await catalogAdapter.getMatchResults(ingredients);
       set({ matchResults: results, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('GET_MATCH_RESULTS_FAILED', '매칭 결과를 가져오는데 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'GET_MATCH_RESULTS_FAILED',
-          message: error.message || '매칭 결과를 가져오는데 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -84,13 +86,14 @@ export const useCatalogStore = create<CatalogState>((set, get) => ({
     try {
       const categories = await catalogAdapter.getCategories();
       set({ categories, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('GET_CATEGORIES_FAILED', '카테고리 목록을 가져오는데 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'GET_CATEGORIES_FAILED',
-          message: error.message || '카테고리 목록을 가져오는데 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }
@@ -102,13 +105,14 @@ export const useCatalogStore = create<CatalogState>((set, get) => ({
     try {
       const supplierTypes = await catalogAdapter.getSupplierTypes();
       set({ supplierTypes, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = error instanceof ApiError ? error : new ApiError('GET_SUPPLIER_TYPES_FAILED', '공급업체 유형을 가져오는데 실패했습니다.', true);
       set({
         isLoading: false,
         error: {
-          code: error.code || 'GET_SUPPLIER_TYPES_FAILED',
-          message: error.message || '공급업체 유형을 가져오는데 실패했습니다.',
-          retryable: error.retryable ?? true,
+          code: apiError.code,
+          message: apiError.message,
+          retryable: apiError.retryable,
         },
       });
     }

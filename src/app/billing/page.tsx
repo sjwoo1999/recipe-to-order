@@ -4,10 +4,10 @@ import { useEffect } from 'react';
 import { useAuthStore } from '@/stores/auth';
 import { useBillingStore } from '@/stores/billing';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlanGate } from '@/components/plan-gate';
 import { SkeletonCard } from '@/components/ui/skeleton';
-import { Check, X, Crown, Star, Zap, Building, Brain, CreditCard } from 'lucide-react';
+import { Check, X, Crown, Star, Building, CreditCard } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import { useToast } from '@/components/ui/toast';
 
@@ -61,12 +61,11 @@ export default function BillingPage() {
     usageStats, 
     planGateModal,
     isLoading, 
-    error, 
+    error,
     loadPlans, 
     loadCurrentPlan, 
     loadUsageStats,
     changePlan,
-    showPlanGate,
     hidePlanGate 
   } = useBillingStore();
   const { addToast } = useToast();
@@ -98,7 +97,7 @@ export default function BillingPage() {
         title: '요금제가 변경되었습니다',
         message: `${newPlan} 요금제로 업그레이드되었습니다.`,
       });
-    } catch (error) {
+    } catch (_error) {
       addToast({
         type: 'error',
         title: '요금제 변경 실패',
@@ -107,11 +106,11 @@ export default function BillingPage() {
     }
   };
 
-  const handleFeatureClick = (feature: string) => {
-    if (!currentPlan?.features[feature]) {
-      showPlanGate(feature);
-    }
-  };
+  // const handleFeatureClick = (feature: string) => {
+  //   if (!currentPlan?.features[feature]) {
+  //     showPlanGate(feature);
+  //   }
+  // };
 
   if (isLoading) {
     return (
