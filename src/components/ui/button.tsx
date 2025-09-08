@@ -12,20 +12,20 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', loading = false, disabled, children, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+    const baseStyles = 'inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 shadow-sm';
     
     const variants = {
-      primary: 'bg-[#F76241] text-white hover:bg-[#E55A3A] focus-visible:ring-[#F76241]',
-      secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-500',
-      outline: 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus-visible:ring-gray-500',
+      primary: 'bg-[#F76241] text-white hover:bg-[#E55A3A] focus-visible:ring-[#F76241] shadow-md hover:shadow-lg',
+      secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-500 border border-gray-200',
+      outline: 'border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus-visible:ring-gray-500 hover:border-gray-400',
       ghost: 'text-gray-700 hover:bg-gray-100 focus-visible:ring-gray-500',
-      danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600',
+      danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600 shadow-md hover:shadow-lg',
     };
     
     const sizes = {
-      sm: 'h-8 px-3 text-sm min-w-[44px]', // 최소 터치 영역 44px
-      md: 'h-10 px-4 text-sm min-w-[44px]',
-      lg: 'h-12 px-6 text-base min-w-[44px]',
+      sm: 'h-10 px-4 text-base min-w-[48px]', // 터치 영역 확대
+      md: 'h-12 px-6 text-lg min-w-[56px]', // 기본 크기 확대
+      lg: 'h-14 px-8 text-xl min-w-[64px]', // 큰 크기 확대
     };
     
     return (

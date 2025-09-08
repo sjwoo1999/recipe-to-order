@@ -2,7 +2,17 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1a1a;
+  --primary: #F76241;
+  --primary-hover: #E55A3A;
+  --secondary: #f8f9fa;
+  --border: #e5e7eb;
+  --text-muted: #6b7280;
+  --text-light: #9ca3af;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
 }
 
 @theme inline {
@@ -19,8 +29,82 @@
   }
 }
 
+/* 기본 스타일 - 연령대 높은 사용자 고려 */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px; /* 기본 폰트 크기 확대 */
+  line-height: 1.6; /* 줄 간격 확대 */
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', '맑은 고딕', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 접근성 개선 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 포커스 표시 개선 */
+*:focus {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* 버튼 기본 스타일 */
+button {
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* 링크 스타일 */
+a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--primary-hover);
+  text-decoration-thickness: 3px;
+}
+
+/* 입력 필드 스타일 */
+input, textarea, select {
+  font-size: 16px; /* iOS 줌 방지 */
+  font-family: inherit;
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-light);
 }
