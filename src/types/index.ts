@@ -111,6 +111,18 @@ export interface ApiError {
   retryable: boolean;
 }
 
+export class ApiError extends Error {
+  code: string;
+  retryable: boolean;
+
+  constructor(code: string, message: string, retryable: boolean = true) {
+    super(message);
+    this.name = 'ApiError';
+    this.code = code;
+    this.retryable = retryable;
+  }
+}
+
 export interface LoadingState {
   isLoading: boolean;
   error?: ApiError;
