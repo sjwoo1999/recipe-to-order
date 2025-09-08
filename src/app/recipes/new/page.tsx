@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Plus, Trash2, ChefHat } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
+import { UX_MESSAGES } from '@/lib/utils';
 
 interface RecipeItem {
   name: string;
@@ -63,7 +64,8 @@ export default function NewRecipePage() {
     if (!formData.name.trim()) {
       addToast({
         type: 'error',
-        title: '레시피 이름을 입력해주세요',
+        title: UX_MESSAGES.error.validationError.title,
+        message: '레시피 이름을 입력해주세요.',
       });
       return;
     }
@@ -71,7 +73,8 @@ export default function NewRecipePage() {
     if (!formData.category.trim()) {
       addToast({
         type: 'error',
-        title: '카테고리를 입력해주세요',
+        title: UX_MESSAGES.error.validationError.title,
+        message: '카테고리를 입력해주세요.',
       });
       return;
     }
@@ -80,7 +83,8 @@ export default function NewRecipePage() {
     if (validItems.length === 0) {
       addToast({
         type: 'error',
-        title: '최소 하나의 재료를 입력해주세요',
+        title: UX_MESSAGES.error.validationError.title,
+        message: '최소 하나의 재료를 입력해주세요.',
       });
       return;
     }
@@ -102,8 +106,8 @@ export default function NewRecipePage() {
 
       addToast({
         type: 'success',
-        title: '레시피가 생성되었습니다',
-        message: `${formData.name} 레시피가 성공적으로 생성되었습니다.`,
+        title: UX_MESSAGES.success.recipeCreated.title,
+        message: UX_MESSAGES.success.recipeCreated.message,
       });
 
       router.push('/recipes');
@@ -139,7 +143,7 @@ export default function NewRecipePage() {
           <CardHeader>
             <CardTitle>기본 정보</CardTitle>
             <CardDescription>
-              레시피의 기본 정보를 입력하세요
+              {UX_MESSAGES.help.recipeCreation}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

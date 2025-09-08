@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SkeletonCard } from '@/components/ui/skeleton';
 import { Plus, ChefHat, Users, Clock } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
+import { formatDate, UX_MESSAGES } from '@/lib/utils';
 
 export default function RecipesPage() {
   const { user } = useAuthStore();
@@ -72,14 +72,16 @@ export default function RecipesPage() {
 
       {/* Recipes Grid */}
       {recipes.length === 0 ? (
-        <div className="text-center py-8 sm:py-12">
-          <ChefHat className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">레시피가 없습니다</h3>
-          <p className="text-sm sm:text-base text-gray-600 mb-6">첫 번째 레시피를 만들어보세요</p>
+        <div className="text-center py-12 sm:py-16">
+          <div className="mx-auto w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <ChefHat className="h-10 w-10 text-gray-400" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-3">{UX_MESSAGES.empty.noRecipes.title}</h3>
+          <p className="text-base text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">{UX_MESSAGES.empty.noRecipes.message}</p>
           <Link href="/recipes/new" className="w-full sm:w-auto">
-            <Button className="w-full sm:w-auto">
-              <Plus className="h-4 w-4 mr-2" />
-              새 레시피 만들기
+            <Button size="lg" className="w-full sm:w-auto">
+              <Plus className="h-5 w-5 mr-2" />
+              {UX_MESSAGES.empty.noRecipes.action}
             </Button>
           </Link>
         </div>

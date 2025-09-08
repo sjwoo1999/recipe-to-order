@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, ChefHat, Users, ShoppingCart, AlertTriangle } from 'lucide-react';
-import { formatDate, formatCurrency } from '@/lib/utils';
+import { formatDate, formatCurrency, UX_MESSAGES } from '@/lib/utils';
 import { useToast } from '@/components/ui/toast';
 
 export default function RecipeDetailPage() {
@@ -155,7 +155,7 @@ export default function RecipeDetailPage() {
           <CardHeader>
             <CardTitle>인분 조절</CardTitle>
             <CardDescription>
-              원하는 인분을 선택하면 재료량이 자동으로 계산됩니다
+              {UX_MESSAGES.help.servingConversion}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -240,7 +240,7 @@ export default function RecipeDetailPage() {
           <CardHeader>
             <CardTitle>상품 매칭 결과</CardTitle>
             <CardDescription>
-              각 재료에 맞는 상품을 확인하고 장바구니에 추가하세요
+              {UX_MESSAGES.help.productMatching}
             </CardDescription>
           </CardHeader>
           <CardContent>

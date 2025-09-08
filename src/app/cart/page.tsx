@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ShoppingCart, Trash2, Minus, Plus, Calendar, FileText } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, UX_MESSAGES } from '@/lib/utils';
 
 export default function CartPage() {
   const { cart, updateQuantity, removeItem, updateDeliveryDate, updateMemo, clearCart } = useCartStore();
@@ -38,13 +38,15 @@ export default function CartPage() {
           <p className="text-sm sm:text-base text-gray-600 mt-1">선택한 상품들을 확인하고 주문하세요</p>
         </div>
         
-        <div className="text-center py-8 sm:py-12">
-          <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">장바구니가 비어있습니다</h3>
-          <p className="text-sm sm:text-base text-gray-600 mb-6">레시피에서 상품을 선택하여 장바구니에 담아보세요</p>
+        <div className="text-center py-12 sm:py-16">
+          <div className="mx-auto w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <ShoppingCart className="h-10 w-10 text-gray-400" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-3">{UX_MESSAGES.empty.emptyCart.title}</h3>
+          <p className="text-base text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">{UX_MESSAGES.empty.emptyCart.message}</p>
           <Link href="/recipes" className="w-full sm:w-auto">
-            <Button className="w-full sm:w-auto">
-              레시피 보러가기
+            <Button size="lg" className="w-full sm:w-auto">
+              {UX_MESSAGES.empty.emptyCart.action}
             </Button>
           </Link>
         </div>

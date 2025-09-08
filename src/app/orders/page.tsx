@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SkeletonCard } from '@/components/ui/skeleton';
 import { Package, Eye, X, Clock, CheckCircle, Truck } from 'lucide-react';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency, formatDate, UX_MESSAGES } from '@/lib/utils';
 
 const statusConfig = {
   pending: { label: '주문 대기', color: 'text-yellow-600', icon: Clock },
@@ -76,13 +76,15 @@ export default function OrdersPage() {
 
       {/* Orders List */}
       {orders.length === 0 ? (
-        <div className="text-center py-12">
-          <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">주문 내역이 없습니다</h3>
-          <p className="text-gray-600 mb-6">아직 주문한 상품이 없습니다</p>
+        <div className="text-center py-12 sm:py-16">
+          <div className="mx-auto w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <Package className="h-10 w-10 text-gray-400" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-3">{UX_MESSAGES.empty.noOrders.title}</h3>
+          <p className="text-base text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">{UX_MESSAGES.empty.noOrders.message}</p>
           <Link href="/recipes">
-            <Button>
-              레시피 보러가기
+            <Button size="lg">
+              {UX_MESSAGES.empty.noOrders.action}
             </Button>
           </Link>
         </div>

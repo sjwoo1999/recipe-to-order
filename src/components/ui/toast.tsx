@@ -85,10 +85,10 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
   };
 
   const colors = {
-    success: 'bg-green-50 border-green-200 text-green-800',
-    error: 'bg-red-50 border-red-200 text-red-800',
-    warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-    info: 'bg-blue-50 border-blue-200 text-blue-800',
+    success: 'bg-green-50 border-2 border-green-200 text-green-800',
+    error: 'bg-red-50 border-2 border-red-200 text-red-800',
+    warning: 'bg-yellow-50 border-2 border-yellow-200 text-yellow-800',
+    info: 'bg-blue-50 border-2 border-blue-200 text-blue-800',
   };
 
   const Icon = icons[toast.type];
@@ -96,25 +96,25 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
   return (
     <div
       className={cn(
-        'flex items-start p-4 rounded-lg border shadow-lg max-w-sm',
+        'flex items-start p-5 rounded-xl border-2 shadow-lg max-w-md',
         colors[toast.type]
       )}
       role="alert"
       aria-live="polite"
     >
-      <Icon className="h-5 w-5 mt-0.5 mr-3 flex-shrink-0" />
+      <Icon className="h-6 w-6 mt-1 mr-4 flex-shrink-0" />
       <div className="flex-1">
-        <p className="font-medium text-sm">{toast.title}</p>
+        <p className="font-semibold text-base">{toast.title}</p>
         {toast.message && (
-          <p className="text-sm mt-1 opacity-90">{toast.message}</p>
+          <p className="text-base mt-2 opacity-90 leading-relaxed">{toast.message}</p>
         )}
       </div>
       <button
         onClick={() => onRemove(toast.id)}
-        className="ml-3 text-gray-400 hover:text-gray-600 transition-colors"
-        aria-label="닫기"
+        className="ml-4 p-1 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+        aria-label="메시지 닫기"
       >
-        <X className="h-4 w-4" />
+        <X className="h-5 w-5" />
       </button>
     </div>
   );
