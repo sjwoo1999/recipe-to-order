@@ -22,15 +22,15 @@ export default function RecipesPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">레시피</h1>
-            <p className="text-gray-600 mt-1">등록된 레시피를 관리하세요</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">레시피</h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">등록된 레시피를 관리하세요</p>
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <SkeletonCard key={i} />
           ))}
@@ -55,15 +55,15 @@ export default function RecipesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">레시피</h1>
-          <p className="text-gray-600 mt-1">등록된 레시피를 관리하세요</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">레시피</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">등록된 레시피를 관리하세요</p>
         </div>
-        <Link href="/recipes/new">
-          <Button>
+        <Link href="/recipes/new" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto">
             <Plus className="h-4 w-4 mr-2" />
             새 레시피
           </Button>
@@ -72,45 +72,45 @@ export default function RecipesPage() {
 
       {/* Recipes Grid */}
       {recipes.length === 0 ? (
-        <div className="text-center py-12">
+        <div className="text-center py-8 sm:py-12">
           <ChefHat className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">레시피가 없습니다</h3>
-          <p className="text-gray-600 mb-6">첫 번째 레시피를 만들어보세요</p>
-          <Link href="/recipes/new">
-            <Button>
+          <p className="text-sm sm:text-base text-gray-600 mb-6">첫 번째 레시피를 만들어보세요</p>
+          <Link href="/recipes/new" className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               새 레시피 만들기
             </Button>
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {recipes.map((recipe) => (
             <Link key={recipe.id} href={`/recipes/${recipe.id}`}>
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
                 <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg">{recipe.name}</CardTitle>
-                      <CardDescription className="mt-1">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <CardTitle className="text-base sm:text-lg truncate">{recipe.name}</CardTitle>
+                      <CardDescription className="mt-1 text-xs sm:text-sm">
                         {recipe.category}
                       </CardDescription>
                     </div>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <Users className="h-4 w-4 mr-1" />
+                    <div className="flex items-center text-xs sm:text-sm text-gray-500">
+                      <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                       {recipe.baseServings}인분
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <ChefHat className="h-4 w-4 mr-2" />
+                    <div className="flex items-center text-xs sm:text-sm text-gray-600">
+                      <ChefHat className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
                       {recipe.items.length}개 재료
                     </div>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <Clock className="h-4 w-4 mr-2" />
-                      {formatDate(recipe.updatedAt)}
+                    <div className="flex items-center text-xs sm:text-sm text-gray-500">
+                      <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
+                      <span className="truncate">{formatDate(recipe.updatedAt)}</span>
                     </div>
                   </div>
                 </CardContent>

@@ -23,9 +23,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
     
     const sizes = {
-      sm: 'h-8 px-3 text-sm',
-      md: 'h-10 px-4 text-sm',
-      lg: 'h-12 px-6 text-base',
+      sm: 'h-8 px-3 text-sm min-w-[44px]', // 최소 터치 영역 44px
+      md: 'h-10 px-4 text-sm min-w-[44px]',
+      lg: 'h-12 px-6 text-base min-w-[44px]',
     };
     
     return (

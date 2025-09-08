@@ -32,18 +32,18 @@ export default function CartPage() {
 
   if (cart.items.length === 0) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">장바구니</h1>
-          <p className="text-gray-600 mt-1">선택한 상품들을 확인하고 주문하세요</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">장바구니</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">선택한 상품들을 확인하고 주문하세요</p>
         </div>
         
-        <div className="text-center py-12">
+        <div className="text-center py-8 sm:py-12">
           <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">장바구니가 비어있습니다</h3>
-          <p className="text-gray-600 mb-6">레시피에서 상품을 선택하여 장바구니에 담아보세요</p>
-          <Link href="/recipes">
-            <Button>
+          <p className="text-sm sm:text-base text-gray-600 mb-6">레시피에서 상품을 선택하여 장바구니에 담아보세요</p>
+          <Link href="/recipes" className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto">
               레시피 보러가기
             </Button>
           </Link>
@@ -53,68 +53,70 @@ export default function CartPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">장바구니</h1>
-          <p className="text-gray-600 mt-1">선택한 상품들을 확인하고 주문하세요</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">장바구니</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">선택한 상품들을 확인하고 주문하세요</p>
         </div>
         <Button
           variant="outline"
           onClick={clearCart}
-          className="text-red-600 hover:text-red-700"
+          className="text-red-600 hover:text-red-700 w-full sm:w-auto"
         >
           <Trash2 className="h-4 w-4 mr-2" />
           전체 삭제
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
           {cart.items.map((item) => (
             <Card key={item.productId}>
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900">{item.displayName}</h3>
-                    <div className="text-sm text-gray-600 mt-1">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">{item.displayName}</h3>
+                    <div className="text-xs sm:text-sm text-gray-600 mt-1">
                       {item.packSize}{item.product.unit} • {item.product.supplierType}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-xs sm:text-sm text-gray-500">
                       단가: {formatCurrency(item.unitPrice)}
                     </div>
                   </div>
                   
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center justify-between sm:justify-end sm:space-x-4">
                     {/* Quantity Controls */}
                     <div className="flex items-center space-x-2">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleQuantityChange(item.productId, item.quantityPacks - 1)}
+                        className="h-8 w-8 p-0"
                       >
-                        <Minus className="h-4 w-4" />
+                        <Minus className="h-3 w-3" />
                       </Button>
-                      <span className="w-8 text-center font-medium">
+                      <span className="w-8 text-center font-medium text-sm">
                         {item.quantityPacks}
                       </span>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleQuantityChange(item.productId, item.quantityPacks + 1)}
+                        className="h-8 w-8 p-0"
                       >
-                        <Plus className="h-4 w-4" />
+                        <Plus className="h-3 w-3" />
                       </Button>
                     </div>
                     
                     {/* Subtotal */}
                     <div className="text-right">
-                      <div className="font-medium text-gray-900">
+                      <div className="font-medium text-gray-900 text-sm sm:text-base">
                         {formatCurrency(item.subtotal)}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-xs sm:text-sm text-gray-500">
                         {item.quantityPacks}개 × {formatCurrency(item.unitPrice)}
                       </div>
                     </div>
@@ -124,9 +126,9 @@ export default function CartPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => removeItem(item.productId)}
-                      className="text-red-600 hover:text-red-700"
+                      className="text-red-600 hover:text-red-700 h-8 w-8 p-0"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>
                 </div>
