@@ -1,0 +1,205 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { useCartStore } from '@/stores/cart';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { ShoppingCart, Trash2, Minus, Plus, Calendar, FileText } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
+
+export default function CartPage() {
+  const { cart, updateQuantity, removeItem, updateDeliveryDate, updateMemo, clearCart } = useCartStore();
+  const [memo, setMemo] = useState(cart.memo || '');
+
+  const handleQuantityChange = (productId: string, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      removeItem(productId);
+    } else {
+      updateQuantity(productId, newQuantity);
+    }
+  };
+
+  const handleMemoChange = (value: string) => {
+    setMemo(value);
+    updateMemo(value);
+  };
+
+  const handleDeliveryDateChange = (date: string) => {
+    updateDeliveryDate(date);
+  };
+
+  if (cart.items.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">장바구니</h1>
+          <p className="text-gray-600 mt-1">선택한 상품들을 확인하고 주문하세요</p>
+        </div>
+        
+        <div className="text-center py-12">
+          <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">장바구니가 비어있습니다</h3>
+          <p className="text-gray-600 mb-6">레시피에서 상품을 선택하여 장바구니에 담아보세요</p>
+          <Link href="/recipes">
+            <Button>
+              레시피 보러가기
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">장바구니</h1>
+          <p className="text-gray-600 mt-1">선택한 상품들을 확인하고 주문하세요</p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={clearCart}
+          className="text-red-600 hover:text-red-700"
+        >
+          <Trash2 className="h-4 w-4 mr-2" />
+          전체 삭제
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Cart Items */}
+        <div className="lg:col-span-2 space-y-4">
+          {cart.items.map((item) => (
+            <Card key={item.productId}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="font-medium text-gray-900">{item.displayName}</h3>
+                    <div className="text-sm text-gray-600 mt-1">
+                      {item.packSize}{item.product.unit} • {item.product.supplierType}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      단가: {formatCurrency(item.unitPrice)}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    {/* Quantity Controls */}
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleQuantityChange(item.productId, item.quantityPacks - 1)}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="w-8 text-center font-medium">
+                        {item.quantityPacks}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleQuantityChange(item.productId, item.quantityPacks + 1)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    
+                    {/* Subtotal */}
+                    <div className="text-right">
+                      <div className="font-medium text-gray-900">
+                        {formatCurrency(item.subtotal)}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {item.quantityPacks}개 × {formatCurrency(item.unitPrice)}
+                      </div>
+                    </div>
+                    
+                    {/* Remove Button */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeItem(item.productId)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Order Summary */}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>주문 요약</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Delivery Date */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Calendar className="h-4 w-4 inline mr-1" />
+                  배송 희망일
+                </label>
+                <Input
+                  type="date"
+                  value={cart.deliveryDate || ''}
+                  onChange={(e) => handleDeliveryDateChange(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+
+              {/* Memo */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <FileText className="h-4 w-4 inline mr-1" />
+                  주문 메모
+                </label>
+                <textarea
+                  className="w-full h-20 px-3 py-2 border border-gray-300 rounded-lg text-sm placeholder:text-gray-400 focus:border-[#F76241] focus:outline-none focus:ring-2 focus:ring-[#F76241] focus:ring-offset-2"
+                  placeholder="주문 시 참고사항을 입력하세요"
+                  value={memo}
+                  onChange={(e) => handleMemoChange(e.target.value)}
+                />
+              </div>
+
+              {/* Totals */}
+              <div className="space-y-2 pt-4 border-t border-gray-200">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">상품 금액</span>
+                  <span className="text-gray-900">{formatCurrency(cart.subtotal)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">세금 (10%)</span>
+                  <span className="text-gray-900">{formatCurrency(cart.tax)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">배송비</span>
+                  <span className="text-gray-900">{formatCurrency(cart.shippingFee)}</span>
+                </div>
+                <div className="flex justify-between text-lg font-semibold pt-2 border-t border-gray-200">
+                  <span>총 금액</span>
+                  <span className="text-[#F76241]">{formatCurrency(cart.total)}</span>
+                </div>
+              </div>
+
+              {/* Checkout Button */}
+              <Link href="/checkout" className="block">
+                <Button className="w-full" size="lg">
+                  주문하기
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
