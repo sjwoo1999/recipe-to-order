@@ -60,32 +60,51 @@ export class CatalogAdapter {
       throw new ApiError('FIND_PRODUCTS_FAILED', '재료에 맞는 상품을 찾는데 실패했습니다.', true);
     }
     
-    const { unit: stdUnit } = convertToStandardUnit(ingredient.scaledQty, ingredient.unit);
+    const { unit: stdUnit } = convertToStandardUnit(ingredient.scaledQty, ingredient.unit, ingredient.name);
     
     // Find products that match the ingredient name or alternative names
     const searchTerms = [ingredient.name, ...ingredient.altNames].map(term => term.toLowerCase());
     
-    let candidates = this.products.filter(product => 
-      searchTerms.some(term => 
-        product.spec.toLowerCase().includes(term) ||
-        product.brand.toLowerCase().includes(term) ||
-        product.category?.toLowerCase().includes(term)
-      )
-    );
-    
-    // Filter by compatible units
-    candidates = candidates.filter(product => {
+    // Create a scoring system for better matching
+    const candidates = this.products.map(product => {
+      let score = 0;
+      const productSpec = product.spec.toLowerCase();
+      const productBrand = product.brand.toLowerCase();
+      const productCategory = product.category?.toLowerCase() || '';
+      
+      // Exact match gets highest score
+      searchTerms.forEach(term => {
+        if (productSpec === term) score += 100;
+        else if (productSpec.includes(term)) score += 50;
+        else if (productBrand.includes(term)) score += 30;
+        else if (productCategory.includes(term)) score += 20;
+      });
+      
+      // Bonus for supplier type priority
+      const supplierBonus = { '계약가': 10, '도매': 5, '소매': 0 };
+      score += supplierBonus[product.supplierType];
+      
+      return { product, score };
+    }).filter(({ product, score }) => {
+      // Only include products with some match
+      if (score === 0) return false;
+      
+      // Filter by compatible units
       if (stdUnit === 'g' && ['g', 'kg'].includes(product.unit)) return true;
       if (stdUnit === 'ml' && ['ml', 'L'].includes(product.unit)) return true;
       if (stdUnit === '개' && product.unit === '개') return true;
+      if (stdUnit === '큰술' && ['g', 'ml'].includes(product.unit)) return true; // 큰술은 g/ml로 변환 가능
       return false;
     });
     
-    // Sort by supplier type priority
+    // Sort by score (highest first), then by supplier type
     const supplierPriority = { '계약가': 0, '도매': 1, '소매': 2 };
-    candidates.sort((a, b) => supplierPriority[a.supplierType] - supplierPriority[b.supplierType]);
+    candidates.sort((a, b) => {
+      if (a.score !== b.score) return b.score - a.score;
+      return supplierPriority[a.product.supplierType] - supplierPriority[b.product.supplierType];
+    });
     
-    return candidates.slice(0, 5); // Return top 5 candidates
+    return candidates.slice(0, 5).map(({ product }) => product);
   }
 
   async getMatchResults(ingredients: ScaledItem[]): Promise<MatchResult[]> {

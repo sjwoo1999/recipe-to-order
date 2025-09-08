@@ -7,19 +7,40 @@ export function cn(...inputs: ClassValue[]) {
 
 // Unit conversion utilities
 export const UNIT_CONVERSIONS = {
-  '큰술': 15, // ml
-  '티스푼': 5, // ml
-  '개': 1, // 기본 단위 (평균 100g)
+  '큰술': 15, // ml (액체 기준)
+  '티스푼': 5, // ml (액체 기준)
+  '개': 1, // 기본 단위
 } as const;
 
-export function convertToStandardUnit(qty: number, unit: string): { qty: number; unit: string } {
+// 재료별 평균 무게 (g)
+export const INGREDIENT_WEIGHTS = {
+  '두부': 300, // 두부 1개 = 300g
+  '대파': 50, // 대파 1개 = 50g
+  '마늘': 5, // 마늘 1개 = 5g
+  '고춧가루': 3, // 고춧가루 1큰술 = 3g
+  '된장': 15, // 된장 1큰술 = 15g
+  '올리브오일': 15, // 올리브오일 1큰술 = 15ml
+  '토마토소스': 15, // 토마토소스 1큰술 = 15ml
+} as const;
+
+export function convertToStandardUnit(qty: number, unit: string, ingredientName?: string): { qty: number; unit: string } {
   switch (unit) {
     case '큰술':
+      // 재료에 따라 g 또는 ml로 변환
+      if (ingredientName && INGREDIENT_WEIGHTS[ingredientName as keyof typeof INGREDIENT_WEIGHTS]) {
+        return { qty: qty * INGREDIENT_WEIGHTS[ingredientName as keyof typeof INGREDIENT_WEIGHTS], unit: 'g' };
+      }
+      // 기본적으로 ml로 변환 (액체 기준)
       return { qty: qty * UNIT_CONVERSIONS.큰술, unit: 'ml' };
     case '티스푼':
       return { qty: qty * UNIT_CONVERSIONS.티스푼, unit: 'ml' };
     case '개':
-      return { qty: qty * 100, unit: 'g' }; // 평균 100g
+      // 재료에 따라 다른 무게 적용
+      if (ingredientName && INGREDIENT_WEIGHTS[ingredientName as keyof typeof INGREDIENT_WEIGHTS]) {
+        return { qty: qty * INGREDIENT_WEIGHTS[ingredientName as keyof typeof INGREDIENT_WEIGHTS], unit: 'g' };
+      }
+      // 기본값: 100g
+      return { qty: qty * 100, unit: 'g' };
     default:
       return { qty, unit };
   }

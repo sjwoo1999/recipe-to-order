@@ -168,7 +168,7 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
     
     const scaledItems: ScaledItem[] = currentRecipe.items.map(item => {
       const scaledQty = Math.round(item.baseQty * scaleRatio * 100) / 100; // Round to 2 decimal places
-      const { unit: stdUnit } = convertToStandardUnit(scaledQty, item.unit);
+      const { unit: stdUnit } = convertToStandardUnit(scaledQty, item.unit, item.name);
       
       return {
         ...item,
